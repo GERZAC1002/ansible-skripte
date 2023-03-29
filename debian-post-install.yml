@@ -1,8 +1,11 @@
 ---
 - hosts: all
+  become: true
   vars:
     ansible_skript: "debian-post-install.yml"
     skript_version: "v0.1"
+    debian_main_repo_url: "http://gerzac1002.de/debian/"
+    debian_security_repo_url: "http://gerzac1002.de/debian-security/"
     pakete:
       - bash-completion
       - python3-apt
@@ -19,13 +22,42 @@
       ansible.builtin.set_fact:
         pakete: "{% if weitere_pakete is defined %}{{ pakete + weitere_pakete }}{% else %}{{ pakete }}{% endif %}"
 
-    - name: "Konfiguriere APT"
+    - name: "Füge leere sources.list für apt hinzu"
       ansible.builtin.template:
         src: templates/sources.list.j2
         dest: /etc/apt/sources.list
         owner: root
         group: root
         mode: 644
+
+    - name: "Füge Hauptrepository hinzu"
+      ansible.builtin.template:
+        src: templates/sources_list_d/main.list.j2
+        dest: /etc/apt/sources.list.d/main.list
+        owner: root
+        group: root
+        mode: 644
+
+    - name: "Füge Sicherheitsrepository hinzu"
+      ansible.builtin.template:
+        src: templates/sources_list_d/security.list.j2
+        dest: /etc/apt/sources.list.d/security.list
+        owner: root
+        group: root
+        mode: 644
+
+    - name: "Füge Backportsrepository hinzu"
+      ansible.builtin.template:
+        src: templates/sources_list_d/backports.list.j2
+        dest: /etc/apt/sources.list.d/backports.list
+        owner: root
+        group: root
+        mode: 644
+
+    - name: "Aktualisiere System"
+      ansible.builtin.apt:
+        upgrade: "safe"
+        update_cache: true
 
     - name: "Installiere Pakete"
       ansible.builtin.apt:

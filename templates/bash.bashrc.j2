@@ -23,7 +23,7 @@ fi
 
 export HISTSIZE={{ zeilen_vergangenheit }}
 export HISTFILESIZE={{ zeilen_vergangenheitsdatei }}
-export HISTTIMEFORMAT="%Y-%m-%d %T"
+export HISTTIMEFORMAT="%Y-%m-%d %T "
 
 if [ "$EUID" -ne 0 ]; then
 	export PS1="\[\e[0;37m\][\[\e[0;37m\]\[\033[1;36m\]\u\[\e[0;37m\]@\[\e[0;37m\]\[\033[1;32m\]\h\[\e[0;37m\]] \[\e[0;37m\]\[\033[1;36m\]\w\[\e[0;37m\]>\[\e[0;37m\] "
